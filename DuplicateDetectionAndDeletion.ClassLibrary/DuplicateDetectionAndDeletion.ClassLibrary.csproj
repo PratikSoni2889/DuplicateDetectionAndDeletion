@@ -63,6 +63,7 @@
   <ItemGroup>
     <Compile Include="Class1.cs" />
     <Compile Include="CRM\CRMConnection.cs" />
+    <Compile Include="CRM\RetrieveCrmSkeleton.cs" />
     <Compile Include="Models\CRMCredentials.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

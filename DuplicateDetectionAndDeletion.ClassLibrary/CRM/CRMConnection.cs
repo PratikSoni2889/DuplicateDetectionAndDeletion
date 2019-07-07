@@ -5,20 +5,26 @@ using Microsoft.Xrm.Sdk.Client;
 using NLog;
 using System;
 using System.Net;
-using System.Security;
 using System.ServiceModel.Description;
 
 namespace DuplicateDetectionAndDeletion.ClassLibrary.CRM
 {
     public class CRMConnection
     {
-        private static Logger _logger = LogManager.GetCurrentClassLogger();
+        private readonly Logger _logger = LogManager.GetCurrentClassLogger();
 
-        public IOrganizationService EstablishCRMConnection()
+        public IOrganizationService EstablishCRMConnection(CRMCredential crmCredential)
         {
+            if (crmCredential == null)
+            {
+                _logger.Error("CRM credentials not found.");
+                return null;
+            }
+
             _logger.Info("Connecting to Dynamics 365 ..... ");
 
-            CRMCredential credential = ReadCredentialDetails();
+            CRMCredential credential = crmCredential;
+            //CRMCredential credential = ReadCredentialDetails();
 
             //Connection 
             Uri organisationurl = new Uri(credential.Url);
@@ -41,7 +47,8 @@ namespace DuplicateDetectionAndDeletion.ClassLibrary.CRM
                 Guid userid = ((WhoAmIResponse)service.Execute(new WhoAmIRequest())).UserId;
                 if (userid != Guid.Empty)
                 {
-                    _logger.Info(string.Format("Connection Established Succesfully with user {0} in {1} environment", credential.UserName.ToUpper(), credential.UrlName.ToUpper()));
+                    _logger.Info("Connection Established Succesfully");
+                    //_logger.Info($"Connection Established Succesfully with user {0} in {1} environment", credential.UserName.ToUpper(), credential.UrlName.ToUpper());
                     return service;
                 }
                 else
@@ -52,69 +59,74 @@ namespace DuplicateDetectionAndDeletion.ClassLibrary.CRM
             return null;
         }
 
-        public CRMCredential ReadCredentialDetails()
-        {
-            var credential = new CRMCredential();
+        #region READING DETAILS
 
-            //Console.Write("\n\nPlease enter UserName: ");
-            //credential.UserName = Console.ReadLine();
+        //private CRMCredential ReadCredentialDetails()
+        //{
+        //    var credential = new CRMCredential();
 
-            //Console.Write("Please enter Password: ");
-            //credential.Password = GetPassword().ToString();
+        //    //Console.Write("\n\nPlease enter UserName: ");
+        //    //credential.UserName = Console.ReadLine();
 
-            //Console.Write("\nPlease enter Organization Service URL : ");
-            //credential.Url = Console.ReadLine();
+        //    //Console.Write("Please enter Password: ");
+        //    //credential.Password = GetPassword().ToString();
 
-            #region Existing Credentials
-            // Credentials
+        //    //Console.Write("\nPlease enter Organization Service URL : ");
+        //    //credential.Url = Console.ReadLine();
 
-            // Integration User
-            credential.UserName = "d365integration@advanceddynamics3.onmicrosoft.com";
-            credential.Password = "Nas30032";
+        //    #region Existing Credentials
+        //    // Credentials
 
-            // Test User
-            // credential.UserName = "d365testuser1@advanceddynamics3.onmicrosoft.com";
-            // credential.Password = "Puj43915";
-            #endregion
+        //    // Integration User
+        //    credential.UserName = "d365integration@advanceddynamics3.onmicrosoft.com";
+        //    credential.Password = "Nas30032";
 
-            #region Organization service URL of Environment to connect
-            ///<summary> TALENTLink365 DEV Environment </summary>
-            //credential.Url = "https://talentlink365dev.api.crm11.dynamics.com/XRMServices/2011/Organization.svc";
-            //credential.UrlName = "TALENTLink365 DEV";
+        //    // Test User
+        //    // credential.UserName = "d365testuser1@advanceddynamics3.onmicrosoft.com";
+        //    // credential.Password = "Puj43915";
+        //    #endregion
 
-            ///<summary> TALENTLink365 TEST Environment </summary>
-            credential.Url = "https://talentlink365test.api.crm11.dynamics.com/XRMServices/2011/Organization.svc";
-            credential.UrlName = "TALENTLink365 TEST";
-            #endregion
+        //    #region Organization service URL of Environment to connect
+        //    ///<summary> TALENTLink365 DEV Environment </summary>
+        //    //credential.Url = "https://talentlink365dev.api.crm11.dynamics.com/XRMServices/2011/Organization.svc";
+        //    //credential.UrlName = "TALENTLink365 DEV";
 
-            return credential;
-        }
+        //    ///<summary> TALENTLink365 TEST Environment </summary>
+        //    credential.Url = "https://talentlink365test.api.crm11.dynamics.com/XRMServices/2011/Organization.svc";
+        //    credential.UrlName = "TALENTLink365 TEST";
+        //    #endregion
 
-        public SecureString GetPassword()
-        {
-            var pwd = new SecureString();
-            while (true)
-            {
-                ConsoleKeyInfo i = Console.ReadKey(true);
-                if (i.Key == ConsoleKey.Enter)
-                {
-                    break;
-                }
-                else if (i.Key == ConsoleKey.Backspace)
-                {
-                    if (pwd.Length > 0)
-                    {
-                        pwd.RemoveAt(pwd.Length - 1);
-                        Console.Write("\b \b");
-                    }
-                }
-                else if (i.KeyChar != '\u0000') // KeyChar == '\u0000' if the key pressed does not correspond to a printable character, e.g. F1, Pause-Break, etc
-                {
-                    pwd.AppendChar(i.KeyChar);
-                    Console.Write("*");
-                }
-            }
-            return pwd;
-        }
+        //    return credential;
+        //}
+
+        //private SecureString GetPassword()
+        //{
+        //    var pwd = new SecureString();
+        //    while (true)
+        //    {
+        //        ConsoleKeyInfo i = Console.ReadKey(true);
+        //        if (i.Key == ConsoleKey.Enter)
+        //        {
+        //            break;
+        //        }
+        //        else if (i.Key == ConsoleKey.Backspace)
+        //        {
+        //            if (pwd.Length > 0)
+        //            {
+        //                pwd.RemoveAt(pwd.Length - 1);
+        //                Console.Write("\b \b");
+        //            }
+        //        }
+        //        else if (i.KeyChar != '\u0000') // KeyChar == '\u0000' if the key pressed does not correspond to a printable character, e.g. F1, Pause-Break, etc
+        //        {
+        //            pwd.AppendChar(i.KeyChar);
+        //            Console.Write("*");
+        //        }
+        //    }
+        //    return pwd;
+        //}
+        
+        #endregion
+
     }
 }
