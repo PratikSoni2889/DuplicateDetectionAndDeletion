@@ -18,12 +18,12 @@ namespace DuplicateDetectionAndDeletion.ClassLibrary.CRM
             {
                 EntityName = "solution",
                 ColumnSet = new ColumnSet(new string[] { "publisherid", "installedon", "version", "versionnumber", "friendlyname", "ismanaged", "uniquename" }),
-                //Criteria = new FilterExpression()
+                Criteria = new FilterExpression()
             };
 
-            //querySampleSolution.Criteria.AddCondition("uniquename".ToLower(), ConditionOperator.Like, "*" + solutionUniqueNameLike.ToLower() + "*");
+            querySampleSolution.Criteria.AddCondition("uniquename".ToLower(), ConditionOperator.Like, "*" + solutionUniqueNameLike.ToLower() + "*");
             var solutions = service.RetrieveMultiple(querySampleSolution);
-            //var filteredSolutiions = solutions.Entities.Where(e => e.Attributes.Where(a => a.Key == "uniquename" && a.Value == "*" + solutionUniqueNameLike + "*"));
+            //var filteredSolutiions = solutions.Entities.Where(e => (e.Attributes.Contains("uniquename")) && (e.Attributes["uniquename"].ToString().ToLower() == "*" + solutionUniqueNameLike + "*"));
             if (solutions?.Entities?.Count > 0)
             {
                 return solutions;
