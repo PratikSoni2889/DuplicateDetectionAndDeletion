@@ -188,7 +188,7 @@ namespace DuplicateDetectionAndDeletion
             }
             else
             {
-                MessageBox.Show("Failed to connect to database");
+                MessageBox.Show("Failed to connect Database. Please enter valid data");
             }
         }
 
@@ -253,7 +253,7 @@ namespace DuplicateDetectionAndDeletion
                     selectedColumnList.Add(itemChecked.ToString());
                 }
                 dataGridView1.DataSource = dbConnction.GetDuplicateRecords(dbCredentials, cbTableList.SelectedItem.ToString(), selectedColumnList);
-                MessageBox.Show(dataGridView1.Rows.Count - 1 + " Records retrieved");
+                MessageBox.Show(dataGridView1.Rows.Count - 1 + " Record(s) retrieved");
             }
             else
             {
@@ -277,7 +277,7 @@ namespace DuplicateDetectionAndDeletion
                     selectedColumnList.Add(itemChecked.ToString());
                 }
                 int numberOfRecordRemoved = dbConnction.RemoveDuplicateData(dbCredentials, cbTableList.SelectedItem.ToString(), selectedColumnList);
-                MessageBox.Show(numberOfRecordRemoved + " Records removed");
+                MessageBox.Show(numberOfRecordRemoved + " Record(s) remove");
                 if (numberOfRecordRemoved > 0)
                 {
                     dataGridView1.DataSource = null;

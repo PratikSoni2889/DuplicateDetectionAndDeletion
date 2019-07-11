@@ -128,12 +128,12 @@ namespace DuplicateDetectionAndDeletion.ClassLibrary.CRM
                     orderByStatement = " Order by " + GetOrderByStatement(selectedColumns, "tableA");
 
                     string columns = string.Join(",", selectedColumns);
-                    command.CommandText = "SELECT tableA.* from " + selectedTable + " as tableA INNER JOIN ( SELECT "+ columns +" from  " + selectedTable + " GROUP BY " + columns + " HAVING COUNT(*) > 1 ) as tableB ON " + onStatement + orderByStatement; //"select c.name from sys.columns c inner join sys.tables t on t.object_id = c.object_id and t.name = '" + selectedTable + "' and t.type = 'U'";
+                    command.CommandText = "SELECT tableA.* from " + selectedTable + " as tableA INNER JOIN ( SELECT " + columns + " from  " + selectedTable + " GROUP BY " + columns + " HAVING COUNT(*) > 1 ) as tableB ON " + onStatement + orderByStatement;
                     connection.Open();
 
-                        SqlDataAdapter da = new SqlDataAdapter(command);
-                        // this will query your database and return the result to your datatable
-                        da.Fill(dt);
+                    SqlDataAdapter da = new SqlDataAdapter(command);
+                    // this will query your database and return the result to your datatable
+                    da.Fill(dt);
                 }
             }
             return dt;
@@ -149,7 +149,7 @@ namespace DuplicateDetectionAndDeletion.ClassLibrary.CRM
                 count = count + 1;
                 if (count != selectedColumns.Count)
                 {
-                    onStatement = onStatement + aliasA +"." + item + "=" + aliasB + "." + item +" AND ";
+                    onStatement = onStatement + aliasA + "." + item + "=" + aliasB + "." + item + " AND ";
                 }
                 else
                 {
@@ -192,10 +192,11 @@ namespace DuplicateDetectionAndDeletion.ClassLibrary.CRM
                     string onStatement = string.Empty;
                     string onStatementB = string.Empty;
 
-                    onStatement = GetOnStatement(selectedColumns, "tableA", "tableB");
+                    //onStatement = GetOnStatement(selectedColumns, "tableA", "tableB");
 
                     string columns = string.Join(",", selectedColumns);
-                    command.CommandText = "DELETE FROM "+ selectedTable + " WHERE ID IN (SELECT tableA.ID from " + selectedTable + " as tableA INNER JOIN ( SELECT " + columns + " from  " + selectedTable + " GROUP BY " + columns + " HAVING COUNT(*) > 1 ) as tableB ON " + onStatement + ")"; 
+                    //command.CommandText = "DELETE FROM "+ selectedTable + " WHERE ID < (SELECT MAX(tableA.ID) from " + selectedTable + " as tableA INNER JOIN ( SELECT " + columns + " from  " + selectedTable + " GROUP BY " + columns + " HAVING COUNT(*) > 1 ) as tableB ON " + onStatement + ")"; 
+                    command.CommandText = "WITH CTE AS ( SELECT *, ROW_NUMBER() OVER(PARTITION BY " + columns + " ORDER BY (SELECT NULL)) Seq FROM " + selectedTable + " ) DELETE FROM CTE WHERE Seq > 1";
                     connection.Open();
 
                     numberOfRecordsRemoved = command.ExecuteNonQuery();
