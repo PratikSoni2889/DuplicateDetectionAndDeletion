@@ -227,7 +227,7 @@
             this.button2.Location = new System.Drawing.Point(309, 274);
             this.button2.Name = "button2";
             this.button2.Size = new System.Drawing.Size(141, 23);
-            this.button2.TabIndex = 28;
+            this.button2.TabIndex = 27;
             this.button2.Text = "Remove duplicate data";
             this.button2.UseVisualStyleBackColor = true;
             this.button2.Click += new System.EventHandler(this.Button2_Click);
@@ -237,7 +237,7 @@
             this.btnRetrieveDuplicate.Location = new System.Drawing.Point(162, 274);
             this.btnRetrieveDuplicate.Name = "btnRetrieveDuplicate";
             this.btnRetrieveDuplicate.Size = new System.Drawing.Size(141, 23);
-            this.btnRetrieveDuplicate.TabIndex = 27;
+            this.btnRetrieveDuplicate.TabIndex = 26;
             this.btnRetrieveDuplicate.Text = "Retrieve duplicate data";
             this.btnRetrieveDuplicate.UseVisualStyleBackColor = true;
             this.btnRetrieveDuplicate.Click += new System.EventHandler(this.BtnRetrieveDuplicate_Click);
@@ -248,12 +248,12 @@
             this.chkFieldList.Location = new System.Drawing.Point(162, 188);
             this.chkFieldList.Name = "chkFieldList";
             this.chkFieldList.Size = new System.Drawing.Size(420, 79);
-            this.chkFieldList.TabIndex = 26;
+            this.chkFieldList.TabIndex = 25;
             // 
             // label4
             // 
             this.label4.AutoSize = true;
-            this.label4.Location = new System.Drawing.Point(13, 221);
+            this.label4.Location = new System.Drawing.Point(12, 200);
             this.label4.Name = "label4";
             this.label4.Size = new System.Drawing.Size(67, 13);
             this.label4.TabIndex = 24;
@@ -265,7 +265,7 @@
             this.cbTableList.Location = new System.Drawing.Point(162, 158);
             this.cbTableList.Name = "cbTableList";
             this.cbTableList.Size = new System.Drawing.Size(420, 21);
-            this.cbTableList.TabIndex = 23;
+            this.cbTableList.TabIndex = 24;
             this.cbTableList.SelectedIndexChanged += new System.EventHandler(this.CbTableList_SelectedIndexChanged);
             // 
             // label3
@@ -283,7 +283,7 @@
             this.cbDatabaseList.Location = new System.Drawing.Point(162, 131);
             this.cbDatabaseList.Name = "cbDatabaseList";
             this.cbDatabaseList.Size = new System.Drawing.Size(420, 21);
-            this.cbDatabaseList.TabIndex = 21;
+            this.cbDatabaseList.TabIndex = 23;
             this.cbDatabaseList.SelectedIndexChanged += new System.EventHandler(this.CbDatabaseList_SelectedIndexChanged);
             // 
             // label1
@@ -319,7 +319,7 @@
             this.btnDatabaseConnect.Location = new System.Drawing.Point(162, 102);
             this.btnDatabaseConnect.Name = "btnDatabaseConnect";
             this.btnDatabaseConnect.Size = new System.Drawing.Size(75, 23);
-            this.btnDatabaseConnect.TabIndex = 17;
+            this.btnDatabaseConnect.TabIndex = 22;
             this.btnDatabaseConnect.Text = "Connect";
             this.btnDatabaseConnect.UseVisualStyleBackColor = true;
             this.btnDatabaseConnect.Click += new System.EventHandler(this.BtnDatabaseConnect_Click);
@@ -338,7 +338,7 @@
             this.textBox1.Multiline = true;
             this.textBox1.Name = "textBox1";
             this.textBox1.Size = new System.Drawing.Size(420, 27);
-            this.textBox1.TabIndex = 30;
+            this.textBox1.TabIndex = 20;
             // 
             // label5
             // 
@@ -356,7 +356,7 @@
             this.textBox2.Name = "textBox2";
             this.textBox2.PasswordChar = '*';
             this.textBox2.Size = new System.Drawing.Size(420, 24);
-            this.textBox2.TabIndex = 32;
+            this.textBox2.TabIndex = 21;
             // 
             // label6
             // 

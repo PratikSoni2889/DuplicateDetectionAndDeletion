@@ -41,13 +41,9 @@ namespace DuplicateDetectionAndDeletion
 
         private void BtnDatabaseConnect_Click(object sender, EventArgs e)
         {
-            DatabaseCredentials dbCredentials = new DatabaseCredentials()
-            {
-                DatabaseServerName = txtDatabaseServerName.Text,
-                UserName = textBox1.Text,
-                Password = textBox2.Text
-                
-            };
+            DatabaseCredentials dbCredentials = new DatabaseCredentials();
+            dbCredentials = GetDatabaseCredentialsDetails();
+
             dbCredentials.ConnectionString = "Data Source=" + dbCredentials.DatabaseServerName + ";User ID="+ dbCredentials.UserName+ ";Password="+dbCredentials.Password;
             bool isConnected = dbConnction.EstablishDatabaseConnection(dbCredentials);
 
@@ -80,12 +76,13 @@ namespace DuplicateDetectionAndDeletion
         {
             cbTableList.Items.Clear();
             cbTableList.Refresh();
+            dataGridView1.DataSource = null;
+            dataGridView1.Refresh();
             DatabaseCredentials dbCredentials = new DatabaseCredentials();
             string selectedDatabase = string.Empty;
             selectedDatabase = cbDatabaseList.SelectedItem.ToString();
             dbCredentials = GetDatabaseCredentialsDetails();
             dbCredentials.ConnectionString = "Data Source=" + dbCredentials.DatabaseServerName + "; Initial Catalog = " + selectedDatabase  +"; User ID=" + dbCredentials.UserName + ";Password=" + dbCredentials.Password;
-            //dbCredentials.ConnectionString = "Data Source=localhost;Initial Catalog=" + selectedDatabase + ";Integrated Security=True";
             List<string> tablesOfDatabase = new List<string>();
             tablesOfDatabase = dbConnction.GetAllTablesOfDatabase(dbCredentials);
             if (tablesOfDatabase != null && tablesOfDatabase.Count > 0)
@@ -105,7 +102,6 @@ namespace DuplicateDetectionAndDeletion
             selectedDatabase = cbDatabaseList.SelectedItem.ToString();
             dbCredentials = GetDatabaseCredentialsDetails();
             dbCredentials.ConnectionString = "Data Source=" + dbCredentials.DatabaseServerName + "; Initial Catalog = " + selectedDatabase + "; User ID=" + dbCredentials.UserName + ";Password=" + dbCredentials.Password;
-            //dbCredentials.ConnectionString = "Data Source=localhost;Initial Catalog=" + selectedDatabase + ";Integrated Security=True";
             List<string> fieldsOfTable = new List<string>();
             fieldsOfTable = dbConnction.GetAllColumnsOfTable(dbCredentials, cbTableList.SelectedItem.ToString());
             if (fieldsOfTable != null && fieldsOfTable.Count > 0)
@@ -124,7 +120,6 @@ namespace DuplicateDetectionAndDeletion
                 selectedDatabase = cbDatabaseList.SelectedItem.ToString();
                 dbCredentials = GetDatabaseCredentialsDetails();
                 dbCredentials.ConnectionString = "Data Source=" + dbCredentials.DatabaseServerName + "; Initial Catalog = " + selectedDatabase + "; User ID=" + dbCredentials.UserName + ";Password=" + dbCredentials.Password;
-                //dbCredentials.ConnectionString = "Data Source=localhost;Initial Catalog=" + selectedDatabase + ";Integrated Security=True";
                 List<string> fieldsOfTable = new List<string>();
                 fieldsOfTable = dbConnction.GetAllColumnsOfTable(dbCredentials, cbTableList.SelectedItem.ToString());
                 List<string> selectedColumnList = new List<string>();
@@ -150,7 +145,6 @@ namespace DuplicateDetectionAndDeletion
                 selectedDatabase = cbDatabaseList.SelectedItem.ToString();
                 dbCredentials = GetDatabaseCredentialsDetails();
                 dbCredentials.ConnectionString = "Data Source=" + dbCredentials.DatabaseServerName + "; Initial Catalog = " + selectedDatabase + "; User ID=" + dbCredentials.UserName + ";Password=" + dbCredentials.Password;
-                //dbCredentials.ConnectionString = "Data Source=localhost;Initial Catalog=" + selectedDatabase + ";Integrated Security=True";
                 List<string> fieldsOfTable = new List<string>();
                 fieldsOfTable = dbConnction.GetAllColumnsOfTable(dbCredentials, cbTableList.SelectedItem.ToString());
                 List<string> selectedColumnList = new List<string>();
