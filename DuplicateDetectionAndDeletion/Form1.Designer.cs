@@ -31,6 +31,8 @@
             this.panel1 = new System.Windows.Forms.Panel();
             this.tabControl1 = new System.Windows.Forms.TabControl();
             this.tabCRM = new System.Windows.Forms.TabPage();
+            this.btnOpenLogFile = new System.Windows.Forms.Button();
+            this.btnDetectAndDeleteDupes = new System.Windows.Forms.Button();
             this.cbxKeyColumn = new System.Windows.Forms.ComboBox();
             this.lblKeyColumn = new System.Windows.Forms.Label();
             this.btnDetectDuplicates = new System.Windows.Forms.Button();
@@ -76,6 +78,8 @@
             // 
             // tabCRM
             // 
+            this.tabCRM.Controls.Add(this.btnOpenLogFile);
+            this.tabCRM.Controls.Add(this.btnDetectAndDeleteDupes);
             this.tabCRM.Controls.Add(this.cbxKeyColumn);
             this.tabCRM.Controls.Add(this.lblKeyColumn);
             this.tabCRM.Controls.Add(this.btnDetectDuplicates);
@@ -103,13 +107,33 @@
             this.tabCRM.Text = "CRM";
             this.tabCRM.UseVisualStyleBackColor = true;
             // 
+            // btnOpenLogFile
+            // 
+            this.btnOpenLogFile.Location = new System.Drawing.Point(463, 373);
+            this.btnOpenLogFile.Name = "btnOpenLogFile";
+            this.btnOpenLogFile.Size = new System.Drawing.Size(75, 23);
+            this.btnOpenLogFile.TabIndex = 15;
+            this.btnOpenLogFile.Text = "Open Log";
+            this.btnOpenLogFile.UseVisualStyleBackColor = true;
+            this.btnOpenLogFile.Click += new System.EventHandler(this.BtnOpenLogFile_Click);
+            // 
+            // btnDetectAndDeleteDupes
+            // 
+            this.btnDetectAndDeleteDupes.Location = new System.Drawing.Point(239, 373);
+            this.btnDetectAndDeleteDupes.Name = "btnDetectAndDeleteDupes";
+            this.btnDetectAndDeleteDupes.Size = new System.Drawing.Size(161, 23);
+            this.btnDetectAndDeleteDupes.TabIndex = 14;
+            this.btnDetectAndDeleteDupes.Text = "Detect and Delete Duplicates";
+            this.btnDetectAndDeleteDupes.UseVisualStyleBackColor = true;
+            this.btnDetectAndDeleteDupes.Click += new System.EventHandler(this.BtnDetectAndDeleteDupes_Click);
+            // 
             // cbxKeyColumn
             // 
             this.cbxKeyColumn.FormattingEnabled = true;
             this.cbxKeyColumn.Location = new System.Drawing.Point(148, 246);
             this.cbxKeyColumn.Name = "cbxKeyColumn";
             this.cbxKeyColumn.Size = new System.Drawing.Size(252, 21);
-            this.cbxKeyColumn.TabIndex = 18;
+            this.cbxKeyColumn.TabIndex = 11;
             // 
             // lblKeyColumn
             // 
@@ -125,7 +149,7 @@
             this.btnDetectDuplicates.Location = new System.Drawing.Point(94, 373);
             this.btnDetectDuplicates.Name = "btnDetectDuplicates";
             this.btnDetectDuplicates.Size = new System.Drawing.Size(128, 23);
-            this.btnDetectDuplicates.TabIndex = 16;
+            this.btnDetectDuplicates.TabIndex = 13;
             this.btnDetectDuplicates.Text = "Detect Duplicates";
             this.btnDetectDuplicates.UseVisualStyleBackColor = true;
             this.btnDetectDuplicates.Click += new System.EventHandler(this.BtnDetectDuplicates_Click);
@@ -135,7 +159,7 @@
             this.btnClear.Location = new System.Drawing.Point(239, 144);
             this.btnClear.Name = "btnClear";
             this.btnClear.Size = new System.Drawing.Size(75, 23);
-            this.btnClear.TabIndex = 15;
+            this.btnClear.TabIndex = 8;
             this.btnClear.Text = "Clear";
             this.btnClear.UseVisualStyleBackColor = true;
             this.btnClear.Click += new System.EventHandler(this.BtnClear_Click);
@@ -154,8 +178,8 @@
             this.clbxAttributes.FormattingEnabled = true;
             this.clbxAttributes.Location = new System.Drawing.Point(148, 278);
             this.clbxAttributes.Name = "clbxAttributes";
-            this.clbxAttributes.Size = new System.Drawing.Size(236, 79);
-            this.clbxAttributes.TabIndex = 13;
+            this.clbxAttributes.Size = new System.Drawing.Size(252, 79);
+            this.clbxAttributes.TabIndex = 12;
             // 
             // cbxSolution
             // 
@@ -163,7 +187,7 @@
             this.cbxSolution.Location = new System.Drawing.Point(148, 180);
             this.cbxSolution.Name = "cbxSolution";
             this.cbxSolution.Size = new System.Drawing.Size(252, 21);
-            this.cbxSolution.TabIndex = 12;
+            this.cbxSolution.TabIndex = 9;
             this.cbxSolution.SelectedIndexChanged += new System.EventHandler(this.CbxSolution_SelectedIndexChanged);
             // 
             // lblSolution
@@ -198,7 +222,7 @@
             this.txtUrl.Location = new System.Drawing.Point(147, 78);
             this.txtUrl.Name = "txtUrl";
             this.txtUrl.Size = new System.Drawing.Size(253, 20);
-            this.txtUrl.TabIndex = 8;
+            this.txtUrl.TabIndex = 5;
             // 
             // lblUrl
             // 
@@ -214,7 +238,7 @@
             this.btnCRMConnect.Location = new System.Drawing.Point(147, 144);
             this.btnCRMConnect.Name = "btnCRMConnect";
             this.btnCRMConnect.Size = new System.Drawing.Size(75, 23);
-            this.btnCRMConnect.TabIndex = 6;
+            this.btnCRMConnect.TabIndex = 7;
             this.btnCRMConnect.Text = "Connect";
             this.btnCRMConnect.UseVisualStyleBackColor = true;
             this.btnCRMConnect.Click += new System.EventHandler(this.BtnCRMConnect_Click);
@@ -224,7 +248,7 @@
             this.txtSolutionName.Location = new System.Drawing.Point(148, 110);
             this.txtSolutionName.Name = "txtSolutionName";
             this.txtSolutionName.Size = new System.Drawing.Size(252, 20);
-            this.txtSolutionName.TabIndex = 5;
+            this.txtSolutionName.TabIndex = 6;
             // 
             // txtPassword
             // 
@@ -318,6 +342,8 @@
         private System.Windows.Forms.Button btnDetectDuplicates;
         private System.Windows.Forms.ComboBox cbxKeyColumn;
         private System.Windows.Forms.Label lblKeyColumn;
+        private System.Windows.Forms.Button btnDetectAndDeleteDupes;
+        private System.Windows.Forms.Button btnOpenLogFile;
     }
 }
 
