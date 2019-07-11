@@ -26,7 +26,7 @@ namespace DuplicateDetectionAndDeletion.ClassLibrary.CRM
             CRMCredential credential = crmCredential;
             //CRMCredential credential = ReadCredentialDetails();
 
-            //Connection 
+            //Connection
             Uri organisationurl = new Uri(credential.Url);
             ClientCredentials credentials = new ClientCredentials();
             credentials.UserName.UserName = credential.UserName;
@@ -125,7 +125,7 @@ namespace DuplicateDetectionAndDeletion.ClassLibrary.CRM
         //    }
         //    return pwd;
         //}
-        
+
         #endregion
 
     }

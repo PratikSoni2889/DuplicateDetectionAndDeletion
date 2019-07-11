@@ -21,6 +21,7 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <LangVersion>latest</LangVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -63,8 +64,10 @@
   <ItemGroup>
     <Compile Include="Class1.cs" />
     <Compile Include="CRM\CRMConnection.cs" />
+    <Compile Include="CRM\DuplicateRecords.cs" />
     <Compile Include="CRM\RetrieveCrmSkeleton.cs" />
     <Compile Include="Models\CRMCredentials.cs" />
+    <Compile Include="Models\DuplicateSearch.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

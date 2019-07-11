@@ -17,13 +17,12 @@ namespace DuplicateDetectionAndDeletion.ClassLibrary.CRM
             QueryExpression querySampleSolution = new QueryExpression
             {
                 EntityName = "solution",
-                ColumnSet = new ColumnSet(new string[] { "publisherid", "installedon", "version", "versionnumber", "friendlyname", "ismanaged", "uniquename" }),
+                ColumnSet = new ColumnSet(new string[] { "publisherid", "installedon", "version", "versionnumber", "friendlyname", "ismanaged", "uniquename"}),
                 Criteria = new FilterExpression()
             };
 
-            querySampleSolution.Criteria.AddCondition("uniquename".ToLower(), ConditionOperator.Like, "*" + solutionUniqueNameLike.ToLower() + "*");
+            querySampleSolution.Criteria.AddCondition("uniquename".ToLower(), ConditionOperator.Like, "%" + solutionUniqueNameLike.ToLower() + "%");
             var solutions = service.RetrieveMultiple(querySampleSolution);
-            //var filteredSolutiions = solutions.Entities.Where(e => (e.Attributes.Contains("uniquename")) && (e.Attributes["uniquename"].ToString().ToLower() == "*" + solutionUniqueNameLike + "*"));
             if (solutions?.Entities?.Count > 0)
             {
                 return solutions;
@@ -31,24 +30,56 @@ namespace DuplicateDetectionAndDeletion.ClassLibrary.CRM
             return null;
         }
 
-        public EntityMetadata[] GetEntityList(IOrganizationService service)
+        /// <summary>
+        /// Returns list of Entities
+        /// </summary>
+        /// <param name="service"></param>
+        /// <param name="solutionUniqueName"></param>
+        /// <returns></returns>
+        public List<EntityMetadata> GetEntityList(IOrganizationService service, string solutionUniqueName)
         {
-            _logger.Trace("Started fetching entitites.");
-            Dictionary<string, string> attributesData = new Dictionary<string, string>();
-            RetrieveAllEntitiesRequest metaDataRequest = new RetrieveAllEntitiesRequest();
-            RetrieveAllEntitiesResponse metaDataResponse = new RetrieveAllEntitiesResponse();
-            metaDataRequest.EntityFilters = EntityFilters.Entity;
-
-            // Execute the request.
-
-            metaDataResponse = (RetrieveAllEntitiesResponse)service.Execute(metaDataRequest);
-            _logger.Debug("Request executed successfully.");
-            var entities = metaDataResponse.EntityMetadata;
-            if (entities == null)
+            // get solution components for solution unique name
+            QueryExpression componentsQuery = new QueryExpression
             {
-                _logger.Info("No entities found for current CRM connection.");
-            }
-            return entities;
+                EntityName = "solutioncomponent",
+                ColumnSet = new ColumnSet("objectid"),
+                Criteria = new FilterExpression(),
+            };
+            LinkEntity solutionLink = new LinkEntity("solutioncomponent", "solution", "solutionid", "solutionid", JoinOperator.Inner);
+            solutionLink.LinkCriteria = new FilterExpression();
+            solutionLink.LinkCriteria.AddCondition(new ConditionExpression("uniquename", ConditionOperator.Equal, solutionUniqueName));
+            componentsQuery.LinkEntities.Add(solutionLink);
+            componentsQuery.Criteria.AddCondition(new ConditionExpression("componenttype", ConditionOperator.Equal, 1));
+            EntityCollection ComponentsResult = service.RetrieveMultiple(componentsQuery);
+            //Get all entities
+            RetrieveAllEntitiesRequest AllEntitiesrequest = new RetrieveAllEntitiesRequest()
+            {
+                EntityFilters = EntityFilters.Entity | Microsoft.Xrm.Sdk.Metadata.EntityFilters.Attributes,
+                RetrieveAsIfPublished = true
+            };
+            RetrieveAllEntitiesResponse AllEntitiesresponse = (RetrieveAllEntitiesResponse)service.Execute(AllEntitiesrequest);
+            //Join entities Id and solution Components Id
+            var entities = AllEntitiesresponse.EntityMetadata.Join(ComponentsResult.Entities.Select(x => x.Attributes["objectid"]), x => x.MetadataId, y => y, (x, y) => x);
+            return entities.OrderBy(o => o.LogicalName).ToList();
+        }
+
+        /// <summary>
+        /// Returns list of sorted attributes
+        /// </summary>
+        /// <param name="service"></param>
+        /// <param name="entityLogicalName"></param>
+        /// <returns></returns>
+        public List<AttributeMetadata> GetAttributeList(IOrganizationService service, string entityLogicalName)
+        {
+            RetrieveEntityRequest retrieveEntityRequest = new RetrieveEntityRequest
+            {
+                EntityFilters = EntityFilters.Attributes,
+                LogicalName = entityLogicalName
+            };
+            RetrieveEntityResponse retrieveAccountEntityResponse = (RetrieveEntityResponse)service.Execute(retrieveEntityRequest);
+            EntityMetadata entityMetadata = retrieveAccountEntityResponse.EntityMetadata;
+            var sortedAttributes = entityMetadata.Attributes.OrderBy(o => o.LogicalName).ToList();
+            return sortedAttributes;
         }
     }
 }
