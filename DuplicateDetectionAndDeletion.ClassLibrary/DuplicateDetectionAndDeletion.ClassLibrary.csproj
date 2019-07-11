@@ -66,13 +66,14 @@
     <Compile Include="CRM\CRMConnection.cs" />
     <Compile Include="CRM\DuplicateRecords.cs" />
     <Compile Include="CRM\RetrieveCrmSkeleton.cs" />
+    <Compile Include="Database\DatabaseConnection.cs" />
     <Compile Include="Models\CRMCredentials.cs" />
+    <Compile Include="Models\DatabaseCredentials.cs" />
     <Compile Include="Models\DuplicateSearch.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="bin\Debug\" />
-    <Folder Include="Database\" />
   </ItemGroup>
   <ItemGroup>
     <None Include="bin\coretools\CrmSvcUtil.exe.config" />

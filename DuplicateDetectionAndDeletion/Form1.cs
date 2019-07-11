@@ -19,6 +19,8 @@ namespace DuplicateDetectionAndDeletion
         private readonly CRMConnection _service = new CRMConnection();
         private IOrganizationService _context;
         private readonly RetrieveCrmSkeleton _retrieveCrmSkeleton = new RetrieveCrmSkeleton();
+        private readonly DatabaseConnection dbConnction = new DatabaseConnection();
+        public string ConnectionString { get; set; }
         private string _logFilePath;
 
         public MainForm()
@@ -162,9 +164,146 @@ namespace DuplicateDetectionAndDeletion
             MessageBox.Show($"Total {recordsProcessed} Deleted. Please check the log file.", "Dynamics 365", MessageBoxButtons.OK, MessageBoxIcon.Information);
         }
 
-        private void TabCRM_Click(object sender, EventArgs e)
+        private void BtnDatabaseConnect_Click(object sender, EventArgs e)
+        {
+            DatabaseCredentials dbCredentials = new DatabaseCredentials();
+            dbCredentials = GetDatabaseCredentialsDetails();
+
+            dbCredentials.ConnectionString = "Data Source=" + dbCredentials.DatabaseServerName + ";User ID="+ dbCredentials.UserName+ ";Password="+dbCredentials.Password;
+            bool isConnected = dbConnction.EstablishDatabaseConnection(dbCredentials);
+
+            List<string> databaseList = new List<string>();
+            if (isConnected)
+            {
+                MessageBox.Show("Database connected successfully");
+                databaseList = dbConnction.GetAllDatabasesOfServer(dbCredentials);
+                if (databaseList != null && databaseList.Count > 0)
+                {
+                    // ======= Fill Database drop down list
+                    foreach (var item in databaseList)
+                    {
+                        cbDatabaseList.Items.Add(item);
+                    }
+                }
+            }
+            else
+            {
+                MessageBox.Show("Failed to connect to database");
+            }
+        }
+
+        private void Label1_Click(object sender, EventArgs e)
         {
 
+        }
+
+        private void CbDatabaseList_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            cbTableList.Items.Clear();
+            cbTableList.Refresh();
+            dataGridView1.DataSource = null;
+            dataGridView1.Refresh();
+            DatabaseCredentials dbCredentials = new DatabaseCredentials();
+            string selectedDatabase = string.Empty;
+            selectedDatabase = cbDatabaseList.SelectedItem.ToString();
+            dbCredentials = GetDatabaseCredentialsDetails();
+            dbCredentials.ConnectionString = "Data Source=" + dbCredentials.DatabaseServerName + "; Initial Catalog = " + selectedDatabase  +"; User ID=" + dbCredentials.UserName + ";Password=" + dbCredentials.Password;
+            _ = new List<string>();
+            List<string> tablesOfDatabase = dbConnction.GetAllTablesOfDatabase(dbCredentials);
+            if (tablesOfDatabase != null && tablesOfDatabase.Count > 0)
+            {
+                // ======= Fill Database drop down list
+                foreach (var item in tablesOfDatabase)
+                {
+                    cbTableList.Items.Add(item);
+                }
+            }
+        }
+
+        private void CbTableList_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            DatabaseCredentials dbCredentials = new DatabaseCredentials();
+            string selectedDatabase = string.Empty;
+            selectedDatabase = cbDatabaseList.SelectedItem.ToString();
+            dbCredentials = GetDatabaseCredentialsDetails();
+            dbCredentials.ConnectionString = "Data Source=" + dbCredentials.DatabaseServerName + "; Initial Catalog = " + selectedDatabase + "; User ID=" + dbCredentials.UserName + ";Password=" + dbCredentials.Password;
+            List<string> fieldsOfTable = new List<string>();
+            fieldsOfTable = dbConnction.GetAllColumnsOfTable(dbCredentials, cbTableList.SelectedItem.ToString());
+            if (fieldsOfTable != null && fieldsOfTable.Count > 0)
+            {
+                // ======= Fill Database drop down list
+                chkFieldList.DataSource = fieldsOfTable;
+            }
+        }
+
+        private void BtnRetrieveDuplicate_Click(object sender, EventArgs e)
+        {
+            if (chkFieldList.CheckedItems.Count > 0)
+            {
+                DatabaseCredentials dbCredentials = new DatabaseCredentials();
+                string selectedDatabase = string.Empty;
+                selectedDatabase = cbDatabaseList.SelectedItem.ToString();
+                dbCredentials = GetDatabaseCredentialsDetails();
+                dbCredentials.ConnectionString = "Data Source=" + dbCredentials.DatabaseServerName + "; Initial Catalog = " + selectedDatabase + "; User ID=" + dbCredentials.UserName + ";Password=" + dbCredentials.Password;
+                List<string> fieldsOfTable = new List<string>();
+                fieldsOfTable = dbConnction.GetAllColumnsOfTable(dbCredentials, cbTableList.SelectedItem.ToString());
+                List<string> selectedColumnList = new List<string>();
+                foreach (object itemChecked in chkFieldList.CheckedItems)
+                {
+                    selectedColumnList.Add(itemChecked.ToString());
+                }
+                dataGridView1.DataSource = dbConnction.GetDuplicateRecords(dbCredentials, cbTableList.SelectedItem.ToString(), selectedColumnList);
+                MessageBox.Show(dataGridView1.Rows.Count - 1 + " Records retrieved");
+            }
+            else
+            {
+                MessageBox.Show("Please select at least one column");
+            }
+        }
+
+        private void Button2_Click(object sender, EventArgs e)
+        {
+            if (dataGridView1.Rows.Count > 0)
+            {
+                DatabaseCredentials dbCredentials = new DatabaseCredentials();
+                string selectedDatabase = cbDatabaseList.SelectedItem.ToString();
+                dbCredentials = GetDatabaseCredentialsDetails();
+                dbCredentials.ConnectionString = "Data Source=" + dbCredentials.DatabaseServerName + "; Initial Catalog = " + selectedDatabase + "; User ID=" + dbCredentials.UserName + ";Password=" + dbCredentials.Password;
+                _ = new List<string>();
+                _ = dbConnction.GetAllColumnsOfTable(dbCredentials, cbTableList.SelectedItem.ToString());
+                List<string> selectedColumnList = new List<string>();
+                foreach (object itemChecked in chkFieldList.CheckedItems)
+                {
+                    selectedColumnList.Add(itemChecked.ToString());
+                }
+                int numberOfRecordRemoved = dbConnction.RemoveDuplicateData(dbCredentials, cbTableList.SelectedItem.ToString(), selectedColumnList);
+                MessageBox.Show(numberOfRecordRemoved + " Records removed");
+                if (numberOfRecordRemoved > 0)
+                {
+                    dataGridView1.DataSource = null;
+                }
+            }
+            else
+            {
+                MessageBox.Show("No record(s) to removed");
+            }
+        }
+
+        private void Label2_Click(object sender, EventArgs e)
+        {
+
+        }
+        private DatabaseCredentials GetDatabaseCredentialsDetails()
+        {
+            DatabaseCredentials dbCredentials = new DatabaseCredentials()
+            {
+                DatabaseServerName = txtDatabaseServerName.Text,
+                UserName = textBox1.Text,
+                Password = textBox2.Text
+
+            };
+
+            return dbCredentials;
         }
 
         private void BtnOpenLogFile_Click(object sender, EventArgs e)
@@ -172,44 +311,5 @@ namespace DuplicateDetectionAndDeletion
             File.ReadAllText(_logFilePath);
             Process.Start("notepad.exe", _logFilePath);
         }
-    }
-
-    /// <summary>
-    /// IEquatable class to handle the key attributes selected for duplicate detection & deletion
-    /// </summary>
-    public class Key : IEquatable<Key>
-    {
-        private Dictionary<string, object> _values = new Dictionary<string, object>();
-        public Key(Dictionary<string, object> values)
-        {
-            _values = values;
-        }
-        public bool Equals(Key other)
-        {
-            if (other == null) return false;
-            foreach (var value in _values)
-            {
-                if (!other._values.TryGetValue(value.Key, out var otherValue)) return false;
-                if (!value.Value.Equals(otherValue)) return false;
-            }
-            return true;
-        }
-
-        public override int GetHashCode()
-        {
-            unchecked
-            {
-                int hashCode = 0;
-                foreach (var value in _values)
-                {
-                    hashCode = (hashCode ^ value.Value.GetHashCode());
-                }
-
-                return hashCode;
-
-            }
-        }
-
-        public override string ToString() => _values.Select(kv => $"{kv.Key}={kv.Value}").Aggregate((a, c) => $"{a},{c}");
     }
 }
