@@ -10,8 +10,10 @@ namespace DuplicateDetectionAndDeletion.ClassLibrary.CRM
 {
     public static class DuplicateRecords
     {
-        private static string fullFileName;
-        public static void RetrieveAndDeleteDuplicateRecords(IOrganizationService _crmService, DuplicateSearch duplicateSearch, bool deleteDuplicateRecords)
+        private static string _fullFileName;
+        private static int _recordsProcessed;
+
+        public static (string filePath, int recordsProcessed) RetrieveAndDeleteDuplicateRecords(IOrganizationService _crmService, DuplicateSearch duplicateSearch, bool deleteDuplicateRecords)
         {
             var results = RetrieveDuplicates(_crmService, duplicateSearch);
 
@@ -20,6 +22,7 @@ namespace DuplicateDetectionAndDeletion.ClassLibrary.CRM
                 DeleteDuplicates(_crmService, results);
             }
 
+            return (_fullFileName, _recordsProcessed);
         }
 
         /// <summary>
@@ -47,7 +50,7 @@ namespace DuplicateDetectionAndDeletion.ClassLibrary.CRM
         {
             Console.WriteLine("\n INFO: Deleting the duplicate records...");
             int deletedRecordCount = 0;
-            using (StreamWriter writer = new StreamWriter(fullFileName, append: true))
+            using (StreamWriter writer = new StreamWriter(_fullFileName, append: true))
             {
                 writer.WriteLine("\n====================");
                 writer.WriteLine("Deleted records");
@@ -99,11 +102,11 @@ namespace DuplicateDetectionAndDeletion.ClassLibrary.CRM
             try
             {
                 string fileName = "DuplicateRecordDetails_" + entityLogicalName + "_" + DateTime.Now.ToString("yyyymmddhhmm") + ".txt";
-                fullFileName = Path.Combine(Environment.CurrentDirectory, fileName);
+                _fullFileName = Path.Combine(Environment.CurrentDirectory, fileName);
 
                 Console.WriteLine(" INFO: Writing duplicate records to file...");
                 int totalDuplicateRecords = 0;
-                using (StreamWriter writer = new StreamWriter(fullFileName))
+                using (StreamWriter writer = new StreamWriter(_fullFileName))
                 {
                     foreach (var group in results)
                     {
@@ -125,6 +128,7 @@ namespace DuplicateDetectionAndDeletion.ClassLibrary.CRM
                     writer.WriteLine(string.Format("Total duplicate records: {0}", totalDuplicateRecords.ToString()));
 
                 }
+                _recordsProcessed = totalDuplicateRecords;
                 Console.WriteLine(string.Format(" INFO: Total {0} duplicate records added in {1}", totalDuplicateRecords.ToString(), fileName.ToUpper()));
                 return true;
             }

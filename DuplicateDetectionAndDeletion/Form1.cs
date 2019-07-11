@@ -4,6 +4,8 @@ using Microsoft.Xrm.Sdk;
 using Microsoft.Xrm.Sdk.Metadata;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
+using System.IO;
 using System.Linq;
 using System.Windows.Forms;
 
@@ -17,7 +19,7 @@ namespace DuplicateDetectionAndDeletion
         private readonly CRMConnection _service = new CRMConnection();
         private IOrganizationService _context;
         private readonly RetrieveCrmSkeleton _retrieveCrmSkeleton = new RetrieveCrmSkeleton();
-
+        private string _logFilePath;
 
         public MainForm()
         {
@@ -102,12 +104,45 @@ namespace DuplicateDetectionAndDeletion
 
         private void BtnClear_Click(object sender, EventArgs e)
         {
-            InitializeComponent();
+            txtUrl.Clear();
+            txtUserName.Clear();
+            txtPassword.Clear();
+            txtSolutionName.Clear();
         }
 
         private void BtnDetectDuplicates_Click(object sender, EventArgs e)
         {
-            List<Key> keyList = new List<Key>();
+            var keyAttributes = new List<string>();
+
+            int startIndex;
+            int substringLength;
+            string attributeLogicalName;
+
+            foreach (object itemChecked in clbxAttributes.CheckedItems)
+            {
+                //startIndex = itemChecked.ToString().IndexOf("[");
+                //substringLength = itemChecked.ToString().Length - 2 - startIndex;
+                //attributeLogicalName = itemChecked.ToString().Substring(startIndex + 1, substringLength);
+
+                //keyAttributes.Add(attributeLogicalName);
+                keyAttributes.Add(itemChecked.ToString());
+            }
+
+            DuplicateSearch duplicateSearch = new DuplicateSearch()
+            {
+                EntityLogicalName = cbxEntities.SelectedItem.ToString(),
+                DuplicatedColumnName = cbxKeyColumn.SelectedItem.ToString(),
+                ColumnList = keyAttributes
+            };
+
+            var (filePath, recordsProcessed) = DuplicateRecords.RetrieveAndDeleteDuplicateRecords(_context, duplicateSearch, false);
+            _logFilePath = filePath;
+
+            MessageBox.Show($"Total {recordsProcessed} records detected. Please check the log file.", "Dynamics 365", MessageBoxButtons.OK, MessageBoxIcon.Information);
+        }
+
+        private void BtnDetectAndDeleteDupes_Click(object sender, EventArgs e)
+        {
             var keyAttributes = new List<string>();
 
             foreach (object itemChecked in clbxAttributes.CheckedItems)
@@ -122,7 +157,20 @@ namespace DuplicateDetectionAndDeletion
                 ColumnList = keyAttributes
             };
 
-            DuplicateRecords.RetrieveAndDeleteDuplicateRecords(_context, duplicateSearch, true);
+            var(filePath, recordsProcessed) = DuplicateRecords.RetrieveAndDeleteDuplicateRecords(_context, duplicateSearch, true);
+            _logFilePath = filePath;
+            MessageBox.Show($"Total {recordsProcessed} Deleted. Please check the log file.", "Dynamics 365", MessageBoxButtons.OK, MessageBoxIcon.Information);
+        }
+
+        private void TabCRM_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void BtnOpenLogFile_Click(object sender, EventArgs e)
+        {
+            File.ReadAllText(_logFilePath);
+            Process.Start("notepad.exe", _logFilePath);
         }
     }
 
