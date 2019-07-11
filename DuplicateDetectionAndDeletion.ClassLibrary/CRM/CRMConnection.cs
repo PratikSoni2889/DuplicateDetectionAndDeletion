@@ -15,6 +15,8 @@ namespace DuplicateDetectionAndDeletion.ClassLibrary.CRM
 
         public IOrganizationService EstablishCRMConnection(CRMCredential crmCredential)
         {
+            try
+            {
             if (crmCredential == null)
             {
                 _logger.Error("CRM credentials not found.");
@@ -55,6 +57,11 @@ namespace DuplicateDetectionAndDeletion.ClassLibrary.CRM
                 {
                     _logger.Error("Connection to Dynamics 365 Failed ... ");
                 }
+            }
+            }
+            catch (Exception)
+            {
+                return null;
             }
             return null;
         }
