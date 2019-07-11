@@ -4,7 +4,6 @@ using Microsoft.Xrm.Sdk;
 using Microsoft.Xrm.Sdk.Metadata;
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Windows.Forms;
@@ -33,6 +32,11 @@ namespace DuplicateDetectionAndDeletion
             cbxSolution.Items.Clear();
             cbxEntities.Items.Clear();
 
+            if (!ValidateConnectionSettings())
+            {
+                return;
+            }
+
             CRMCredential crmCredential = new CRMCredential()
             {
                 Url = txtUrl.Text,
@@ -44,7 +48,11 @@ namespace DuplicateDetectionAndDeletion
             // Establishes the CRM connection
             _context = _service.EstablishCRMConnection(crmCredential);
 
-            // Log = "Connected successfully to CRM."
+            if (_context == null)
+            {
+                MessageBox.Show("Failed to connect CRM. Please enter valid data.", "Dynamics 365", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
+            }
 
             var solutions = _retrieveCrmSkeleton.GetSolutions(_context, crmCredential.SolutionName);
 
@@ -61,6 +69,35 @@ namespace DuplicateDetectionAndDeletion
             }
 
             MessageBox.Show("Solution(s) loaded", "Dynamics 365", MessageBoxButtons.OK, MessageBoxIcon.Information);
+        }
+
+        private bool ValidateConnectionSettings()
+        {
+            if (string.IsNullOrEmpty(txtUrl.Text))
+            {
+                MessageBox.Show("URL cannot be null", "Dynamics 365", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                txtUrl.Focus();
+                return false;
+            }
+            else if (string.IsNullOrEmpty(txtUserName.Text))
+            {
+                MessageBox.Show("UserName cannot be null", "Dynamics 365", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                txtUserName.Focus();
+                return false;
+            }
+            else if (string.IsNullOrEmpty(txtPassword.Text))
+            {
+                MessageBox.Show("Password cannot be null", "Dynamics 365", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                txtPassword.Focus();
+                return false;
+            }
+            else if (string.IsNullOrEmpty(txtSolutionName.Text))
+            {
+                MessageBox.Show("Solution Name cannot be null", "Dynamics 365", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                txtSolutionName.Focus();
+                return false;
+            }
+            return true;
         }
 
         private void CbxSolution_SelectedIndexChanged(object sender, EventArgs e)
@@ -114,43 +151,44 @@ namespace DuplicateDetectionAndDeletion
 
         private void BtnDetectDuplicates_Click(object sender, EventArgs e)
         {
+            rtxtLogs.Clear();
             var keyAttributes = new List<string>();
 
-            int startIndex;
-            int substringLength;
-            string attributeLogicalName;
-
-            foreach (object itemChecked in clbxAttributes.CheckedItems)
-            {
-                //startIndex = itemChecked.ToString().IndexOf("[");
-                //substringLength = itemChecked.ToString().Length - 2 - startIndex;
-                //attributeLogicalName = itemChecked.ToString().Substring(startIndex + 1, substringLength);
-
-                //keyAttributes.Add(attributeLogicalName);
-                keyAttributes.Add(itemChecked.ToString());
-            }
+            //foreach (object itemChecked in clbxAttributes.CheckedItems)
+            //{
+            //    keyAttributes.Add(itemChecked.ToString());
+            //}
 
             DuplicateSearch duplicateSearch = new DuplicateSearch()
             {
-                EntityLogicalName = cbxEntities.SelectedItem.ToString(),
-                DuplicatedColumnName = cbxKeyColumn.SelectedItem.ToString(),
+                EntityLogicalName = cbxEntities.SelectedItem?.ToString(),
+                DuplicatedColumnName = cbxKeyColumn.SelectedItem?.ToString(),
                 ColumnList = keyAttributes
             };
 
             var (filePath, recordsProcessed) = DuplicateRecords.RetrieveAndDeleteDuplicateRecords(_context, duplicateSearch, false);
+
+            if (filePath == null && recordsProcessed == null)
+            {
+                MessageBox.Show($"Error occurred. Input missing.", "Dynamics 365", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+
             _logFilePath = filePath;
 
-            MessageBox.Show($"Total {recordsProcessed} records detected. Please check the log file.", "Dynamics 365", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            MessageBox.Show($"Total {recordsProcessed} records detected. Please check the logs.", "Dynamics 365", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            LoadLogs();
         }
 
         private void BtnDetectAndDeleteDupes_Click(object sender, EventArgs e)
         {
+            rtxtLogs.Clear();
+
             var keyAttributes = new List<string>();
 
-            foreach (object itemChecked in clbxAttributes.CheckedItems)
-            {
-                keyAttributes.Add(itemChecked.ToString());
-            }
+            //foreach (object itemChecked in clbxAttributes.CheckedItems)
+            //{
+            //    keyAttributes.Add(itemChecked.ToString());
+            //}
 
             DuplicateSearch duplicateSearch = new DuplicateSearch()
             {
@@ -159,9 +197,16 @@ namespace DuplicateDetectionAndDeletion
                 ColumnList = keyAttributes
             };
 
-            var(filePath, recordsProcessed) = DuplicateRecords.RetrieveAndDeleteDuplicateRecords(_context, duplicateSearch, true);
+            var (filePath, recordsProcessed) = DuplicateRecords.RetrieveAndDeleteDuplicateRecords(_context, duplicateSearch, true);
+
+            if (filePath == null && recordsProcessed == null)
+            {
+                MessageBox.Show($"Error occurred. Input missing.", "Dynamics 365", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+
             _logFilePath = filePath;
-            MessageBox.Show($"Total {recordsProcessed} Deleted. Please check the log file.", "Dynamics 365", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            MessageBox.Show($"Total {recordsProcessed} Deleted. Please check the logs.", "Dynamics 365", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            LoadLogs();
         }
 
         private void BtnDatabaseConnect_Click(object sender, EventArgs e)
@@ -169,7 +214,7 @@ namespace DuplicateDetectionAndDeletion
             DatabaseCredentials dbCredentials = new DatabaseCredentials();
             dbCredentials = GetDatabaseCredentialsDetails();
 
-            dbCredentials.ConnectionString = "Data Source=" + dbCredentials.DatabaseServerName + ";User ID="+ dbCredentials.UserName+ ";Password="+dbCredentials.Password;
+            dbCredentials.ConnectionString = "Data Source=" + dbCredentials.DatabaseServerName + ";User ID=" + dbCredentials.UserName + ";Password=" + dbCredentials.Password;
             bool isConnected = dbConnction.EstablishDatabaseConnection(dbCredentials);
 
             List<string> databaseList = new List<string>();
@@ -207,7 +252,7 @@ namespace DuplicateDetectionAndDeletion
             string selectedDatabase = string.Empty;
             selectedDatabase = cbDatabaseList.SelectedItem.ToString();
             dbCredentials = GetDatabaseCredentialsDetails();
-            dbCredentials.ConnectionString = "Data Source=" + dbCredentials.DatabaseServerName + "; Initial Catalog = " + selectedDatabase  +"; User ID=" + dbCredentials.UserName + ";Password=" + dbCredentials.Password;
+            dbCredentials.ConnectionString = "Data Source=" + dbCredentials.DatabaseServerName + "; Initial Catalog = " + selectedDatabase + "; User ID=" + dbCredentials.UserName + ";Password=" + dbCredentials.Password;
             _ = new List<string>();
             List<string> tablesOfDatabase = dbConnction.GetAllTablesOfDatabase(dbCredentials);
             if (tablesOfDatabase != null && tablesOfDatabase.Count > 0)
@@ -300,16 +345,38 @@ namespace DuplicateDetectionAndDeletion
                 DatabaseServerName = txtDatabaseServerName.Text,
                 UserName = textBox1.Text,
                 Password = textBox2.Text
-
             };
 
             return dbCredentials;
         }
 
-        private void BtnOpenLogFile_Click(object sender, EventArgs e)
+        private void LoadLogs()
         {
-            File.ReadAllText(_logFilePath);
-            Process.Start("notepad.exe", _logFilePath);
+            var logs = File.ReadAllText(_logFilePath);
+            rtxtLogs.Text = logs;
+        }
+
+        private void BtnResetAll_Click(object sender, EventArgs e)
+        {
+            txtUrl.Clear();
+            txtUserName.Clear();
+            txtPassword.Clear();
+            txtSolutionName.Clear();
+            cbxSolution.Items.Clear();
+            cbxSolution.Text = "";
+            cbxEntities.Items.Clear();
+            cbxEntities.Text = "";
+            cbxKeyColumn.Items.Clear();
+            cbxKeyColumn.Text = "";
+            btnDetectDuplicates.Enabled = false;
+            btnDetectAndDeleteDupes.Enabled = false;
+            rtxtLogs.Clear();
+        }
+
+        private void CbxKeyColumn_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            btnDetectDuplicates.Enabled = true;
+            btnDetectAndDeleteDupes.Enabled = true;
         }
     }
 }

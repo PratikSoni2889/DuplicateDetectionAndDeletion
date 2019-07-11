@@ -13,16 +13,28 @@ namespace DuplicateDetectionAndDeletion.ClassLibrary.CRM
         private static string _fullFileName;
         private static int _recordsProcessed;
 
-        public static (string filePath, int recordsProcessed) RetrieveAndDeleteDuplicateRecords(IOrganizationService _crmService, DuplicateSearch duplicateSearch, bool deleteDuplicateRecords)
+        public static (string filePath, int? recordsProcessed) RetrieveAndDeleteDuplicateRecords(IOrganizationService _crmService, DuplicateSearch duplicateSearch, bool deleteDuplicateRecords)
         {
-            var results = RetrieveDuplicates(_crmService, duplicateSearch);
-
-            if (deleteDuplicateRecords)
+            if (ValidateInput(duplicateSearch))
             {
-                DeleteDuplicates(_crmService, results);
-            }
+                var results = RetrieveDuplicates(_crmService, duplicateSearch);
 
-            return (_fullFileName, _recordsProcessed);
+                if (deleteDuplicateRecords)
+                {
+                    DeleteDuplicates(_crmService, results);
+                }
+                return (_fullFileName, _recordsProcessed);
+            }
+            return (null, null);
+        }
+
+        public static bool ValidateInput(DuplicateSearch duplicateSearch)
+        {
+            if (duplicateSearch.EntityLogicalName == null || duplicateSearch.DuplicatedColumnName == null)
+            {
+                return false;
+            }
+            return true;
         }
 
         /// <summary>
@@ -30,7 +42,7 @@ namespace DuplicateDetectionAndDeletion.ClassLibrary.CRM
         /// </summary>
         private static List<IGrouping<string, Entity>> RetrieveDuplicates(IOrganizationService _crmService, DuplicateSearch duplicateSearch)
         {
-            QueryExpression query = GenerateQueryExpression(duplicateSearch.EntityLogicalName, duplicateSearch.DuplicatedColumnName, duplicateSearch.ColumnList.ToArray());
+            QueryExpression query = GenerateQueryExpression(duplicateSearch.EntityLogicalName, duplicateSearch.DuplicatedColumnName);//, duplicateSearch.ColumnList.ToArray());
             Console.WriteLine("\n INFO: Finding duplicates is in progress ... \n");
             var results = _crmService.RetrieveAll(query)
                                             .OrderBy(e => e.GetAttributeValue<string>(duplicateSearch.DuplicatedColumnName))
@@ -83,11 +95,11 @@ namespace DuplicateDetectionAndDeletion.ClassLibrary.CRM
         /// <param name="duplicatedColumn"></param>
         /// <param name="columnsList"></param>
         /// <returns></returns>
-        private static QueryExpression GenerateQueryExpression(string entityLogicalName, string duplicatedColumn, string[] columnsList)
+        private static QueryExpression GenerateQueryExpression(string entityLogicalName, string duplicatedColumn)//, string[] columnsList)
         {
             QueryExpression query = new QueryExpression(entityLogicalName)
             {
-                ColumnSet = new ColumnSet(columnsList)
+                ColumnSet = new ColumnSet(duplicatedColumn)//columnsList)
             };
             return query;
         }

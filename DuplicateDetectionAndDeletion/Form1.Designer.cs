@@ -31,12 +31,10 @@
             this.panel1 = new System.Windows.Forms.Panel();
             this.tabControl1 = new System.Windows.Forms.TabControl();
             this.tabCRM = new System.Windows.Forms.TabPage();
-            this.btnOpenLogFile = new System.Windows.Forms.Button();
             this.btnDetectAndDeleteDupes = new System.Windows.Forms.Button();
             this.cbxKeyColumn = new System.Windows.Forms.ComboBox();
             this.lblKeyColumn = new System.Windows.Forms.Label();
             this.btnDetectDuplicates = new System.Windows.Forms.Button();
-            this.btnClear = new System.Windows.Forms.Button();
             this.lblAttributes = new System.Windows.Forms.Label();
             this.clbxAttributes = new System.Windows.Forms.CheckedListBox();
             this.cbxSolution = new System.Windows.Forms.ComboBox();
@@ -53,8 +51,13 @@
             this.lblPassword = new System.Windows.Forms.Label();
             this.lblUserName = new System.Windows.Forms.Label();
             this.tabDatabase = new System.Windows.Forms.TabPage();
-            this.button2 = new System.Windows.Forms.Button();
+            this.textBox2 = new System.Windows.Forms.TextBox();
+            this.dataGridView1 = new System.Windows.Forms.DataGridView();
+            this.label6 = new System.Windows.Forms.Label();
+            this.textBox1 = new System.Windows.Forms.TextBox();
+            this.label5 = new System.Windows.Forms.Label();
             this.btnRetrieveDuplicate = new System.Windows.Forms.Button();
+            this.button2 = new System.Windows.Forms.Button();
             this.chkFieldList = new System.Windows.Forms.CheckedListBox();
             this.label4 = new System.Windows.Forms.Label();
             this.cbTableList = new System.Windows.Forms.ComboBox();
@@ -64,11 +67,9 @@
             this.txtDatabaseServerName = new System.Windows.Forms.TextBox();
             this.label2 = new System.Windows.Forms.Label();
             this.btnDatabaseConnect = new System.Windows.Forms.Button();
-            this.dataGridView1 = new System.Windows.Forms.DataGridView();
-            this.textBox1 = new System.Windows.Forms.TextBox();
-            this.label5 = new System.Windows.Forms.Label();
-            this.textBox2 = new System.Windows.Forms.TextBox();
-            this.label6 = new System.Windows.Forms.Label();
+            this.rtxtLogs = new System.Windows.Forms.RichTextBox();
+            this.label7 = new System.Windows.Forms.Label();
+            this.btnResetAll = new System.Windows.Forms.Button();
             this.panel1.SuspendLayout();
             this.tabControl1.SuspendLayout();
             this.tabCRM.SuspendLayout();
@@ -96,12 +97,13 @@
             // 
             // tabCRM
             // 
-            this.tabCRM.Controls.Add(this.btnOpenLogFile);
+            this.tabCRM.Controls.Add(this.btnResetAll);
+            this.tabCRM.Controls.Add(this.label7);
+            this.tabCRM.Controls.Add(this.rtxtLogs);
             this.tabCRM.Controls.Add(this.btnDetectAndDeleteDupes);
             this.tabCRM.Controls.Add(this.cbxKeyColumn);
             this.tabCRM.Controls.Add(this.lblKeyColumn);
             this.tabCRM.Controls.Add(this.btnDetectDuplicates);
-            this.tabCRM.Controls.Add(this.btnClear);
             this.tabCRM.Controls.Add(this.lblAttributes);
             this.tabCRM.Controls.Add(this.clbxAttributes);
             this.tabCRM.Controls.Add(this.cbxSolution);
@@ -125,23 +127,14 @@
             this.tabCRM.Text = "CRM";
             this.tabCRM.UseVisualStyleBackColor = true;
             // 
-            // btnOpenLogFile
-            // 
-            this.btnOpenLogFile.Location = new System.Drawing.Point(463, 373);
-            this.btnOpenLogFile.Name = "btnOpenLogFile";
-            this.btnOpenLogFile.Size = new System.Drawing.Size(75, 23);
-            this.btnOpenLogFile.TabIndex = 15;
-            this.btnOpenLogFile.Text = "Open Log";
-            this.btnOpenLogFile.UseVisualStyleBackColor = true;
-            this.btnOpenLogFile.Click += new System.EventHandler(this.BtnOpenLogFile_Click);
-            // 
             // btnDetectAndDeleteDupes
             // 
-            this.btnDetectAndDeleteDupes.Location = new System.Drawing.Point(239, 373);
+            this.btnDetectAndDeleteDupes.Enabled = false;
+            this.btnDetectAndDeleteDupes.Location = new System.Drawing.Point(274, 288);
             this.btnDetectAndDeleteDupes.Name = "btnDetectAndDeleteDupes";
-            this.btnDetectAndDeleteDupes.Size = new System.Drawing.Size(161, 23);
+            this.btnDetectAndDeleteDupes.Size = new System.Drawing.Size(126, 23);
             this.btnDetectAndDeleteDupes.TabIndex = 14;
-            this.btnDetectAndDeleteDupes.Text = "Detect and Delete Duplicates";
+            this.btnDetectAndDeleteDupes.Text = "Remove duplicate data";
             this.btnDetectAndDeleteDupes.UseVisualStyleBackColor = true;
             this.btnDetectAndDeleteDupes.Click += new System.EventHandler(this.BtnDetectAndDeleteDupes_Click);
             // 
@@ -152,6 +145,7 @@
             this.cbxKeyColumn.Name = "cbxKeyColumn";
             this.cbxKeyColumn.Size = new System.Drawing.Size(252, 21);
             this.cbxKeyColumn.TabIndex = 11;
+            this.cbxKeyColumn.SelectedIndexChanged += new System.EventHandler(this.CbxKeyColumn_SelectedIndexChanged);
             // 
             // lblKeyColumn
             // 
@@ -164,40 +158,33 @@
             // 
             // btnDetectDuplicates
             // 
-            this.btnDetectDuplicates.Location = new System.Drawing.Point(94, 373);
+            this.btnDetectDuplicates.Enabled = false;
+            this.btnDetectDuplicates.Location = new System.Drawing.Point(136, 288);
             this.btnDetectDuplicates.Name = "btnDetectDuplicates";
-            this.btnDetectDuplicates.Size = new System.Drawing.Size(128, 23);
+            this.btnDetectDuplicates.Size = new System.Drawing.Size(132, 23);
             this.btnDetectDuplicates.TabIndex = 13;
-            this.btnDetectDuplicates.Text = "Detect Duplicates";
+            this.btnDetectDuplicates.Text = "Retrieve duplicate data";
             this.btnDetectDuplicates.UseVisualStyleBackColor = true;
             this.btnDetectDuplicates.Click += new System.EventHandler(this.BtnDetectDuplicates_Click);
-            // 
-            // btnClear
-            // 
-            this.btnClear.Location = new System.Drawing.Point(239, 144);
-            this.btnClear.Name = "btnClear";
-            this.btnClear.Size = new System.Drawing.Size(75, 23);
-            this.btnClear.TabIndex = 8;
-            this.btnClear.Text = "Clear";
-            this.btnClear.UseVisualStyleBackColor = true;
-            this.btnClear.Click += new System.EventHandler(this.BtnClear_Click);
             // 
             // lblAttributes
             // 
             this.lblAttributes.AutoSize = true;
-            this.lblAttributes.Location = new System.Drawing.Point(15, 278);
+            this.lblAttributes.Location = new System.Drawing.Point(43, 430);
             this.lblAttributes.Name = "lblAttributes";
             this.lblAttributes.Size = new System.Drawing.Size(127, 13);
             this.lblAttributes.TabIndex = 14;
             this.lblAttributes.Text = "Select Primary Attribute(s)";
+            this.lblAttributes.Visible = false;
             // 
             // clbxAttributes
             // 
             this.clbxAttributes.FormattingEnabled = true;
-            this.clbxAttributes.Location = new System.Drawing.Point(148, 278);
+            this.clbxAttributes.Location = new System.Drawing.Point(176, 430);
             this.clbxAttributes.Name = "clbxAttributes";
             this.clbxAttributes.Size = new System.Drawing.Size(252, 79);
             this.clbxAttributes.TabIndex = 12;
+            this.clbxAttributes.Visible = false;
             // 
             // cbxSolution
             // 
@@ -253,9 +240,9 @@
             // 
             // btnCRMConnect
             // 
-            this.btnCRMConnect.Location = new System.Drawing.Point(147, 144);
+            this.btnCRMConnect.Location = new System.Drawing.Point(274, 142);
             this.btnCRMConnect.Name = "btnCRMConnect";
-            this.btnCRMConnect.Size = new System.Drawing.Size(75, 23);
+            this.btnCRMConnect.Size = new System.Drawing.Size(126, 23);
             this.btnCRMConnect.TabIndex = 7;
             this.btnCRMConnect.Text = "Connect";
             this.btnCRMConnect.UseVisualStyleBackColor = true;
@@ -305,9 +292,9 @@
             this.lblUserName.AutoSize = true;
             this.lblUserName.Location = new System.Drawing.Point(15, 19);
             this.lblUserName.Name = "lblUserName";
-            this.lblUserName.Size = new System.Drawing.Size(57, 13);
+            this.lblUserName.Size = new System.Drawing.Size(60, 13);
             this.lblUserName.TabIndex = 0;
-            this.lblUserName.Text = "UserName";
+            this.lblUserName.Text = "User Name";
             // 
             // tabDatabase
             // 
@@ -335,15 +322,48 @@
             this.tabDatabase.Text = "Database";
             this.tabDatabase.UseVisualStyleBackColor = true;
             // 
-            // button2
+            // textBox2
             // 
-            this.button2.Location = new System.Drawing.Point(309, 274);
-            this.button2.Name = "button2";
-            this.button2.Size = new System.Drawing.Size(141, 23);
-            this.button2.TabIndex = 27;
-            this.button2.Text = "Remove duplicate data";
-            this.button2.UseVisualStyleBackColor = true;
-            this.button2.Click += new System.EventHandler(this.Button2_Click);
+            this.textBox2.Location = new System.Drawing.Point(162, 72);
+            this.textBox2.Multiline = true;
+            this.textBox2.Name = "textBox2";
+            this.textBox2.PasswordChar = '*';
+            this.textBox2.Size = new System.Drawing.Size(420, 24);
+            this.textBox2.TabIndex = 21;
+            // 
+            // dataGridView1
+            // 
+            this.dataGridView1.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            this.dataGridView1.Location = new System.Drawing.Point(601, 10);
+            this.dataGridView1.Name = "dataGridView1";
+            this.dataGridView1.Size = new System.Drawing.Size(496, 573);
+            this.dataGridView1.TabIndex = 27;
+            // 
+            // label6
+            // 
+            this.label6.AutoSize = true;
+            this.label6.Location = new System.Drawing.Point(19, 83);
+            this.label6.Name = "label6";
+            this.label6.Size = new System.Drawing.Size(53, 13);
+            this.label6.TabIndex = 31;
+            this.label6.Text = "Password";
+            // 
+            // textBox1
+            // 
+            this.textBox1.Location = new System.Drawing.Point(162, 39);
+            this.textBox1.Multiline = true;
+            this.textBox1.Name = "textBox1";
+            this.textBox1.Size = new System.Drawing.Size(420, 27);
+            this.textBox1.TabIndex = 20;
+            // 
+            // label5
+            // 
+            this.label5.AutoSize = true;
+            this.label5.Location = new System.Drawing.Point(19, 42);
+            this.label5.Name = "label5";
+            this.label5.Size = new System.Drawing.Size(60, 13);
+            this.label5.TabIndex = 29;
+            this.label5.Text = "User Name";
             // 
             // btnRetrieveDuplicate
             // 
@@ -354,6 +374,16 @@
             this.btnRetrieveDuplicate.Text = "Retrieve duplicate data";
             this.btnRetrieveDuplicate.UseVisualStyleBackColor = true;
             this.btnRetrieveDuplicate.Click += new System.EventHandler(this.BtnRetrieveDuplicate_Click);
+            // 
+            // button2
+            // 
+            this.button2.Location = new System.Drawing.Point(309, 274);
+            this.button2.Name = "button2";
+            this.button2.Size = new System.Drawing.Size(141, 23);
+            this.button2.TabIndex = 27;
+            this.button2.Text = "Remove duplicate data";
+            this.button2.UseVisualStyleBackColor = true;
+            this.button2.Click += new System.EventHandler(this.Button2_Click);
             // 
             // chkFieldList
             // 
@@ -437,48 +467,32 @@
             this.btnDatabaseConnect.UseVisualStyleBackColor = true;
             this.btnDatabaseConnect.Click += new System.EventHandler(this.BtnDatabaseConnect_Click);
             // 
-            // dataGridView1
+            // rtxtLogs
             // 
-            this.dataGridView1.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            this.dataGridView1.Location = new System.Drawing.Point(601, 10);
-            this.dataGridView1.Name = "dataGridView1";
-            this.dataGridView1.Size = new System.Drawing.Size(496, 573);
-            this.dataGridView1.TabIndex = 27;
+            this.rtxtLogs.Location = new System.Drawing.Point(487, 36);
+            this.rtxtLogs.Name = "rtxtLogs";
+            this.rtxtLogs.Size = new System.Drawing.Size(604, 538);
+            this.rtxtLogs.TabIndex = 15;
+            this.rtxtLogs.Text = "";
             // 
-            // textBox1
+            // label7
             // 
-            this.textBox1.Location = new System.Drawing.Point(162, 39);
-            this.textBox1.Multiline = true;
-            this.textBox1.Name = "textBox1";
-            this.textBox1.Size = new System.Drawing.Size(420, 27);
-            this.textBox1.TabIndex = 20;
+            this.label7.AutoSize = true;
+            this.label7.Location = new System.Drawing.Point(484, 17);
+            this.label7.Name = "label7";
+            this.label7.Size = new System.Drawing.Size(30, 13);
+            this.label7.TabIndex = 19;
+            this.label7.Text = "Logs";
             // 
-            // label5
+            // btnResetAll
             // 
-            this.label5.AutoSize = true;
-            this.label5.Location = new System.Drawing.Point(19, 42);
-            this.label5.Name = "label5";
-            this.label5.Size = new System.Drawing.Size(60, 13);
-            this.label5.TabIndex = 29;
-            this.label5.Text = "User Name";
-            // 
-            // textBox2
-            // 
-            this.textBox2.Location = new System.Drawing.Point(162, 72);
-            this.textBox2.Multiline = true;
-            this.textBox2.Name = "textBox2";
-            this.textBox2.PasswordChar = '*';
-            this.textBox2.Size = new System.Drawing.Size(420, 24);
-            this.textBox2.TabIndex = 21;
-            // 
-            // label6
-            // 
-            this.label6.AutoSize = true;
-            this.label6.Location = new System.Drawing.Point(19, 83);
-            this.label6.Name = "label6";
-            this.label6.Size = new System.Drawing.Size(53, 13);
-            this.label6.TabIndex = 31;
-            this.label6.Text = "Password";
+            this.btnResetAll.Location = new System.Drawing.Point(274, 317);
+            this.btnResetAll.Name = "btnResetAll";
+            this.btnResetAll.Size = new System.Drawing.Size(126, 23);
+            this.btnResetAll.TabIndex = 16;
+            this.btnResetAll.Text = "Reset All";
+            this.btnResetAll.UseVisualStyleBackColor = true;
+            this.btnResetAll.Click += new System.EventHandler(this.BtnResetAll_Click);
             // 
             // MainForm
             // 
@@ -520,12 +534,10 @@
         private System.Windows.Forms.Label lblSolution;
         private System.Windows.Forms.Label lblAttributes;
         private System.Windows.Forms.CheckedListBox clbxAttributes;
-        private System.Windows.Forms.Button btnClear;
         private System.Windows.Forms.Button btnDetectDuplicates;
         private System.Windows.Forms.ComboBox cbxKeyColumn;
         private System.Windows.Forms.Label lblKeyColumn;
         private System.Windows.Forms.Button btnDetectAndDeleteDupes;
-        private System.Windows.Forms.Button btnOpenLogFile;
         private System.Windows.Forms.ComboBox cbDatabaseList;
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.TextBox txtDatabaseServerName;
@@ -542,6 +554,9 @@
         private System.Windows.Forms.Label label5;
         private System.Windows.Forms.TextBox textBox2;
         private System.Windows.Forms.Label label6;
+        private System.Windows.Forms.RichTextBox rtxtLogs;
+        private System.Windows.Forms.Label label7;
+        private System.Windows.Forms.Button btnResetAll;
     }
 }
 
