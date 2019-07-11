@@ -143,25 +143,33 @@ namespace DuplicateDetectionAndDeletion
 
         private void Button2_Click(object sender, EventArgs e)
         {
-            DatabaseCredentials dbCredentials = new DatabaseCredentials();
-            string selectedDatabase = string.Empty;
-            selectedDatabase = cbDatabaseList.SelectedItem.ToString();
-            dbCredentials = GetDatabaseCredentialsDetails();
-            dbCredentials.ConnectionString = "Data Source=" + dbCredentials.DatabaseServerName + "; Initial Catalog = " + selectedDatabase + "; User ID=" + dbCredentials.UserName + ";Password=" + dbCredentials.Password;
-            //dbCredentials.ConnectionString = "Data Source=localhost;Initial Catalog=" + selectedDatabase + ";Integrated Security=True";
-            List<string> fieldsOfTable = new List<string>();
-            fieldsOfTable = dbConnction.GetAllColumnsOfTable(dbCredentials, cbTableList.SelectedItem.ToString());
-            List<string> selectedColumnList = new List<string>();
-            foreach (object itemChecked in chkFieldList.CheckedItems)
+            if (dataGridView1.Rows.Count > 0)
             {
-                selectedColumnList.Add(itemChecked.ToString());
+                DatabaseCredentials dbCredentials = new DatabaseCredentials();
+                string selectedDatabase = string.Empty;
+                selectedDatabase = cbDatabaseList.SelectedItem.ToString();
+                dbCredentials = GetDatabaseCredentialsDetails();
+                dbCredentials.ConnectionString = "Data Source=" + dbCredentials.DatabaseServerName + "; Initial Catalog = " + selectedDatabase + "; User ID=" + dbCredentials.UserName + ";Password=" + dbCredentials.Password;
+                //dbCredentials.ConnectionString = "Data Source=localhost;Initial Catalog=" + selectedDatabase + ";Integrated Security=True";
+                List<string> fieldsOfTable = new List<string>();
+                fieldsOfTable = dbConnction.GetAllColumnsOfTable(dbCredentials, cbTableList.SelectedItem.ToString());
+                List<string> selectedColumnList = new List<string>();
+                foreach (object itemChecked in chkFieldList.CheckedItems)
+                {
+                    selectedColumnList.Add(itemChecked.ToString());
+                }
+                int numberOfRecordRemoved = dbConnction.RemoveDuplicateData(dbCredentials, cbTableList.SelectedItem.ToString(), selectedColumnList);
+                MessageBox.Show(numberOfRecordRemoved + " Records removed");
+                if (numberOfRecordRemoved > 0)
+                {
+                    dataGridView1.DataSource = null;
+                }
             }
-            int numberOfRecordRemoved = dbConnction.RemoveDuplicateData(dbCredentials, cbTableList.SelectedItem.ToString(), selectedColumnList);
-            MessageBox.Show(numberOfRecordRemoved + " Records removed");
-            if(numberOfRecordRemoved > 0)
+            else
             {
-                dataGridView1.DataSource = null;
+                MessageBox.Show("No record(s) to removed");
             }
+
         }
 
         private void Label2_Click(object sender, EventArgs e)
