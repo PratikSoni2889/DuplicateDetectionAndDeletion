@@ -71,7 +71,7 @@
             this.panel1.Controls.Add(this.tabControl1);
             this.panel1.Location = new System.Drawing.Point(6, 7);
             this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(625, 440);
+            this.panel1.Size = new System.Drawing.Size(1117, 620);
             this.panel1.TabIndex = 5;
             // 
             // tabControl1
@@ -81,7 +81,7 @@
             this.tabControl1.Location = new System.Drawing.Point(6, 5);
             this.tabControl1.Name = "tabControl1";
             this.tabControl1.SelectedIndex = 0;
-            this.tabControl1.Size = new System.Drawing.Size(632, 494);
+            this.tabControl1.Size = new System.Drawing.Size(1111, 615);
             this.tabControl1.TabIndex = 5;
             // 
             // tabCRM
@@ -100,7 +100,7 @@
             this.tabCRM.Location = new System.Drawing.Point(4, 22);
             this.tabCRM.Name = "tabCRM";
             this.tabCRM.Padding = new System.Windows.Forms.Padding(3);
-            this.tabCRM.Size = new System.Drawing.Size(624, 468);
+            this.tabCRM.Size = new System.Drawing.Size(1103, 589);
             this.tabCRM.TabIndex = 0;
             this.tabCRM.Text = "CRM";
             this.tabCRM.UseVisualStyleBackColor = true;
@@ -199,12 +199,12 @@
             // tabDatabase
             // 
             this.tabDatabase.Controls.Add(this.textBox2);
+            this.tabDatabase.Controls.Add(this.dataGridView1);
             this.tabDatabase.Controls.Add(this.label6);
             this.tabDatabase.Controls.Add(this.textBox1);
             this.tabDatabase.Controls.Add(this.label5);
             this.tabDatabase.Controls.Add(this.btnRetrieveDuplicate);
             this.tabDatabase.Controls.Add(this.button2);
-            this.tabDatabase.Controls.Add(this.dataGridView1);
             this.tabDatabase.Controls.Add(this.chkFieldList);
             this.tabDatabase.Controls.Add(this.label4);
             this.tabDatabase.Controls.Add(this.cbTableList);
@@ -217,7 +217,7 @@
             this.tabDatabase.Location = new System.Drawing.Point(4, 22);
             this.tabDatabase.Name = "tabDatabase";
             this.tabDatabase.Padding = new System.Windows.Forms.Padding(3);
-            this.tabDatabase.Size = new System.Drawing.Size(624, 468);
+            this.tabDatabase.Size = new System.Drawing.Size(1103, 589);
             this.tabDatabase.TabIndex = 1;
             this.tabDatabase.Text = "Database";
             this.tabDatabase.UseVisualStyleBackColor = true;
@@ -327,9 +327,9 @@
             // dataGridView1
             // 
             this.dataGridView1.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            this.dataGridView1.Location = new System.Drawing.Point(162, 310);
+            this.dataGridView1.Location = new System.Drawing.Point(601, 10);
             this.dataGridView1.Name = "dataGridView1";
-            this.dataGridView1.Size = new System.Drawing.Size(440, 97);
+            this.dataGridView1.Size = new System.Drawing.Size(496, 573);
             this.dataGridView1.TabIndex = 27;
             // 
             // textBox1
@@ -371,7 +371,7 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(872, 518);
+            this.ClientSize = new System.Drawing.Size(1135, 639);
             this.Controls.Add(this.panel1);
             this.Name = "MainForm";
             this.Text = "Duplicate Detection & Deletion";

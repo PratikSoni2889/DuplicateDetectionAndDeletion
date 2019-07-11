@@ -117,21 +117,28 @@ namespace DuplicateDetectionAndDeletion
 
         private void BtnRetrieveDuplicate_Click(object sender, EventArgs e)
         {
-            DatabaseCredentials dbCredentials = new DatabaseCredentials();
-            string selectedDatabase = string.Empty;
-            selectedDatabase = cbDatabaseList.SelectedItem.ToString();
-            dbCredentials = GetDatabaseCredentialsDetails();
-            dbCredentials.ConnectionString = "Data Source=" + dbCredentials.DatabaseServerName + "; Initial Catalog = " + selectedDatabase + "; User ID=" + dbCredentials.UserName + ";Password=" + dbCredentials.Password;
-            //dbCredentials.ConnectionString = "Data Source=localhost;Initial Catalog=" + selectedDatabase + ";Integrated Security=True";
-            List<string> fieldsOfTable = new List<string>();
-            fieldsOfTable = dbConnction.GetAllColumnsOfTable(dbCredentials, cbTableList.SelectedItem.ToString());
-            List<string> selectedColumnList = new List<string>();
-            foreach (object itemChecked in chkFieldList.CheckedItems)
+            if (chkFieldList.CheckedItems.Count > 0)
             {
-                selectedColumnList.Add(itemChecked.ToString());
+                DatabaseCredentials dbCredentials = new DatabaseCredentials();
+                string selectedDatabase = string.Empty;
+                selectedDatabase = cbDatabaseList.SelectedItem.ToString();
+                dbCredentials = GetDatabaseCredentialsDetails();
+                dbCredentials.ConnectionString = "Data Source=" + dbCredentials.DatabaseServerName + "; Initial Catalog = " + selectedDatabase + "; User ID=" + dbCredentials.UserName + ";Password=" + dbCredentials.Password;
+                //dbCredentials.ConnectionString = "Data Source=localhost;Initial Catalog=" + selectedDatabase + ";Integrated Security=True";
+                List<string> fieldsOfTable = new List<string>();
+                fieldsOfTable = dbConnction.GetAllColumnsOfTable(dbCredentials, cbTableList.SelectedItem.ToString());
+                List<string> selectedColumnList = new List<string>();
+                foreach (object itemChecked in chkFieldList.CheckedItems)
+                {
+                    selectedColumnList.Add(itemChecked.ToString());
+                }
+                dataGridView1.DataSource = dbConnction.GetDuplicateRecords(dbCredentials, cbTableList.SelectedItem.ToString(), selectedColumnList);
+                MessageBox.Show(dataGridView1.Rows.Count - 1 + " Records retrieved");
             }
-            dataGridView1.DataSource = dbConnction.GetDuplicateRecords(dbCredentials, cbTableList.SelectedItem.ToString(), selectedColumnList);
-            MessageBox.Show(dataGridView1.Rows.Count-1 + " Records retrieved");
+            else
+            {
+                MessageBox.Show("Please select at least one column");
+            }
         }
 
         private void Button2_Click(object sender, EventArgs e)

@@ -122,12 +122,13 @@ namespace DuplicateDetectionAndDeletion.ClassLibrary.CRM
                 using (SqlCommand command = connection.CreateCommand())
                 {
                     string onStatement = string.Empty;
-                    string onStatementB = string.Empty;
+                    string orderByStatement = string.Empty;
 
                     onStatement = GetOnStatement(selectedColumns, "tableA", "tableB");
+                    orderByStatement = " Order by " + GetOrderByStatement(selectedColumns, "tableA");
 
                     string columns = string.Join(",", selectedColumns);
-                    command.CommandText = "SELECT tableA.* from " + selectedTable + " as tableA INNER JOIN ( SELECT "+ columns +" from  " + selectedTable + " GROUP BY " + columns + " HAVING COUNT(*) > 1 ) as tableB ON " + onStatement; //"select c.name from sys.columns c inner join sys.tables t on t.object_id = c.object_id and t.name = '" + selectedTable + "' and t.type = 'U'";
+                    command.CommandText = "SELECT tableA.* from " + selectedTable + " as tableA INNER JOIN ( SELECT "+ columns +" from  " + selectedTable + " GROUP BY " + columns + " HAVING COUNT(*) > 1 ) as tableB ON " + onStatement + orderByStatement; //"select c.name from sys.columns c inner join sys.tables t on t.object_id = c.object_id and t.name = '" + selectedTable + "' and t.type = 'U'";
                     connection.Open();
 
                         SqlDataAdapter da = new SqlDataAdapter(command);
@@ -157,6 +158,26 @@ namespace DuplicateDetectionAndDeletion.ClassLibrary.CRM
             }
 
             return onStatement;
+        }
+
+        private string GetOrderByStatement(List<string> selectedColumns, string aliasA)
+        {
+            int count = 0;
+            string orderByStatement = string.Empty;
+            foreach (var item in selectedColumns)
+            {
+                count = count + 1;
+                if (count != selectedColumns.Count)
+                {
+                    orderByStatement = orderByStatement + aliasA + "." + item + " , ";
+                }
+                else
+                {
+                    orderByStatement = orderByStatement + aliasA + "." + item;
+                }
+            }
+
+            return orderByStatement;
         }
 
         public int RemoveDuplicateData(DatabaseCredentials dbCredential, string selectedTable, List<string> selectedColumns)
