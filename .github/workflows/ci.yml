@@ -23,4 +23,4 @@ jobs:
       - uses: nuget/setup-nuget@v1
         with:
           nuget-api-key: ${{ secrets.NuGetAPIKey }}
-      - run: nuget restore Advanced.DuplicateDetactionAndDeletion/Advanced.D365.sln
+      - run: nuget restore Advanced.D365.sln
