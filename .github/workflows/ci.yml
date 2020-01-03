@@ -2,6 +2,7 @@ name: CI
 
 on:
   push:
+  commit_comment:
     branches:
       - '*'
 env:
