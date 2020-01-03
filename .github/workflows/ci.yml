@@ -4,12 +4,10 @@ on:
   push:
     branches:
       - '*'
-
 env:
   solution: '**/*.sln'
   buildPlatform: 'Any CPU'
   buildConfiguration: 'Release'
-
 jobs:
   ci_build:
     name: CI Build
