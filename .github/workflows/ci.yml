@@ -1,1 +1,20 @@
+name: CI
 
+on:
+  push:
+    branches:
+      - '*'
+
+env:
+  solution: '**/*.sln'
+  buildPlatform: 'Any CPU'
+  buildConfiguration: 'Release'
+
+jobs:
+  ci_build:
+    name: CI Build
+    runs-on: [windows-latest]
+    steps:
+      - uses: actions/checkout@v2
+        name: Checkout Repository
+      - run: nuget restore Advanced.DuplicateDetactionAndDeletion/Advanced.D365.sln
