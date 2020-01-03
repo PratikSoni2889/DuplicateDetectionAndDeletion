@@ -16,4 +16,11 @@ jobs:
     steps:
       - uses: actions/checkout@v2
         name: Checkout Repository
+      - name: Use Node.js
+        uses: actions/setup-node@v1
+      - name: Nuget Command
+        uses: actions/checkout@master
+      - uses: nuget/setup-nuget@v1
+        with:
+          nuget-api-key: ${{ secrets.NuGetAPIKey }}
       - run: nuget restore Advanced.DuplicateDetactionAndDeletion/Advanced.D365.sln
